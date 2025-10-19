@@ -1390,6 +1390,30 @@ function showIntroOverlay() {
     console.log('🔄 인트로 화면 다시 표시');
 }
 
+// URL 파라미터에서 새로운 별자리 확인 및 추가
+function checkURLForNewConstellation() {
+    try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const constellationParam = urlParams.get('newConstellation');
+        
+        if (constellationParam) {
+            const constellation = JSON.parse(decodeURIComponent(constellationParam));
+            console.log('🔗 URL에서 새 별자리 발견:', constellation);
+            
+            // URL 파라미터 제거 (깔끔하게)
+            window.history.replaceState({}, document.title, window.location.pathname);
+            
+            // 별자리를 3D 공간에 추가
+            addConstellationFromTest(constellation);
+            
+            // 알림 표시
+            showNotification(`✨ "${constellation.userName}"의 별자리가 추가되었습니다!`, 'new-star');
+        }
+    } catch (error) {
+        console.error('❌ URL 파라미터 처리 중 오류:', error);
+    }
+}
+
 // localStorage에서 새로운 별자리 확인 및 추가
 function checkLocalStorageForNewConstellations() {
     try {
@@ -1435,6 +1459,9 @@ function checkLocalStorageForNewConstellations() {
 
 // 페이지 로드 시 실행
 window.addEventListener('load', () => {
+    // URL 파라미터 확인 (최우선)
+    setTimeout(checkURLForNewConstellation, 500);
+    
     // WebSocket 연결 시도
     setTimeout(initializeWebSocket, 1000);
     
