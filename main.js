@@ -1390,7 +1390,57 @@ function showIntroOverlay() {
     console.log('🔄 인트로 화면 다시 표시');
 }
 
-// 페이지 로드 시 WebSocket 연결
+// localStorage에서 새로운 별자리 확인 및 추가
+function checkLocalStorageForNewConstellations() {
+    try {
+        const constellations3D = localStorage.getItem('constellations3D');
+        if (!constellations3D) return;
+        
+        const constellations = JSON.parse(constellations3D);
+        if (!Array.isArray(constellations) || constellations.length === 0) return;
+        
+        // 처리되지 않은 별자리들을 확인
+        const processedKey = 'processedConstellations3D';
+        const processedConstellations = JSON.parse(localStorage.getItem(processedKey) || '[]');
+        
+        constellations.forEach(constellation => {
+            // 이미 처리된 별자리인지 확인
+            const isProcessed = processedConstellations.some(
+                p => p.timestamp === constellation.timestamp && p.userName === constellation.userName
+            );
+            
+            if (!isProcessed) {
+                // 별자리를 3D 공간에 추가
+                console.log('📦 localStorage에서 새 별자리 발견:', constellation);
+                addConstellationFromTest(constellation);
+                
+                // 처리 완료 표시
+                processedConstellations.push({
+                    timestamp: constellation.timestamp,
+                    userName: constellation.userName
+                });
+                
+                // 알림 표시
+                showNotification(`✨ "${constellation.userName}"의 별자리가 추가되었습니다!`, 'new-star');
+            }
+        });
+        
+        // 처리 완료 목록 저장
+        localStorage.setItem(processedKey, JSON.stringify(processedConstellations));
+        
+    } catch (error) {
+        console.error('❌ localStorage 별자리 확인 중 오류:', error);
+    }
+}
+
+// 페이지 로드 시 실행
 window.addEventListener('load', () => {
-    setTimeout(initializeWebSocket, 1000); // 1초 후 연결 시도
+    // WebSocket 연결 시도
+    setTimeout(initializeWebSocket, 1000);
+    
+    // localStorage 확인 (WebSocket 없이도 작동)
+    setTimeout(checkLocalStorageForNewConstellations, 2000);
+    
+    // 주기적으로 localStorage 확인 (10초마다)
+    setInterval(checkLocalStorageForNewConstellations, 10000);
 });
