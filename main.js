@@ -1416,7 +1416,10 @@ function showOnboardingStep() {
 
 // 다음 온보딩 단계로 진행
 function nextOnboardingStep() {
-    if (!onboardingActive) return;
+    if (!onboardingActive) {
+        console.log('⚠️ nextOnboardingStep 호출되었지만 onboardingActive가 false');
+        return;
+    }
     
     const overlay = document.getElementById('onboarding-overlay');
     
@@ -1433,7 +1436,10 @@ function nextOnboardingStep() {
     
     // 1초 후 다음 단계 표시
     setTimeout(() => {
-        showOnboardingStep();
+        // 타임아웃 중에 건너뛰기가 실행되었을 수 있으니 재확인
+        if (onboardingActive) {
+            showOnboardingStep();
+        }
     }, 1000);
 }
 
@@ -1456,7 +1462,22 @@ function completeOnboarding() {
 // 온보딩 건너뛰기 함수
 window.skipOnboarding = function() {
     console.log('⏭️ 온보딩 건너뛰기 버튼 클릭됨 (현재 단계:', onboardingStep, ')');
-    completeOnboarding();
+    
+    // 온보딩 상태를 즉시 종료
+    onboardingActive = false;
+    onboardingStep = 0;
+    
+    const overlay = document.getElementById('onboarding-overlay');
+    const dragHint = document.getElementById('drag-hint');
+    
+    // 즉시 숨기기
+    if (overlay) overlay.style.display = 'none';
+    if (dragHint) dragHint.style.display = 'none';
+    
+    // 도움말 패널 표시
+    showHelpPanel();
+    
+    console.log('✅ 온보딩 즉시 종료됨');
 }
 
 
