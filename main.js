@@ -638,6 +638,9 @@ console.log(`🌟 배경 별 ${backgroundStarCount}개 생성 완료 (반지름:
 // Firebase Realtime Database 리스너 설정
 setupFirebaseListener();
 
+// 저장된 별자리들 불러오기 (페이지 새로고침 시 복원)
+loadSavedConstellations();
+
 // URL 파라미터에서 별자리 데이터 확인
 loadConstellationFromURL();
 
@@ -950,6 +953,9 @@ function setupFirebaseListener() {
             // 별자리를 3D 공간에 추가
             addConstellationToUniverse(constellation);
             
+            // localStorage에 저장 (페이지 새로고침 시에도 유지)
+            saveConstellationToLocalStorage(constellation);
+            
             // 알림 표시
             showNotification(`✨ ${constellation.userName}님의 별자리가 추가되었습니다!`, 'new-star');
             
@@ -989,6 +995,56 @@ function loadConstellationFromURL() {
         
     } catch (error) {
         console.error('❌ URL 별자리 로드 실패:', error);
+    }
+}
+
+// localStorage에 별자리 저장 (영구 보관)
+function saveConstellationToLocalStorage(constellation) {
+    try {
+        const savedConstellations = localStorage.getItem('saved3DConstellations');
+        let constellations = savedConstellations ? JSON.parse(savedConstellations) : [];
+        
+        // 중복 체크 (userName + timestamp로 구분)
+        const isDuplicate = constellations.some(c => 
+            c.userName === constellation.userName && 
+            c.timestamp === constellation.timestamp
+        );
+        
+        if (!isDuplicate) {
+            constellations.push(constellation);
+            localStorage.setItem('saved3DConstellations', JSON.stringify(constellations));
+            console.log('💾 별자리 localStorage에 저장됨:', constellation.userName);
+        } else {
+            console.log('⚠️ 이미 저장된 별자리:', constellation.userName);
+        }
+    } catch (error) {
+        console.error('❌ localStorage 저장 실패:', error);
+    }
+}
+
+// 저장된 별자리들을 불러오기 (페이지 로드 시)
+function loadSavedConstellations() {
+    try {
+        const savedConstellations = localStorage.getItem('saved3DConstellations');
+        if (!savedConstellations) {
+            console.log('📭 저장된 별자리가 없습니다.');
+            return;
+        }
+        
+        const constellations = JSON.parse(savedConstellations);
+        console.log(`💫 저장된 ${constellations.length}개의 별자리 불러오는 중...`);
+        
+        // 각 별자리를 3D 공간에 추가
+        constellations.forEach(constellation => {
+            addConstellationToUniverse(constellation);
+        });
+        
+        if (constellations.length > 0) {
+            showNotification(`💫 ${constellations.length}개의 저장된 별자리를 불러왔습니다!`, 'success');
+        }
+        
+    } catch (error) {
+        console.error('❌ 저장된 별자리 로드 실패:', error);
     }
 }
 
