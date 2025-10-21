@@ -1030,14 +1030,14 @@ function addConstellationToUniverse(constellation) {
         simpleDescription: `${constellation.userName}님의 매력 별자리 (총 레벨: ${constellation.totalLevel})`,
         charms: charmsText,
         comment: `${constellation.charms.length}개의 핵심 매력으로 이루어진 ${constellation.userName}님만의 특별한 별자리입니다.`,
-        image: 'star_background.png', // 기본 이미지 사용
+        image: constellation.cardImage || 'star_background.png', // 카드 이미지 사용
         timestamp: constellation.timestamp,
         isFromIPAD: true
     };
     
     // 기존 addNewStarToUniverse 함수 활용
     addNewStarToUniverse(starData);
-    console.log(`✨ "${constellation.name}" 별자리 추가 완료`);
+    console.log(`✨ "${constellation.name}" 별자리 추가 완료 (이미지: ${constellation.cardImage ? 'O' : 'X'})`);
 }
 
 function initializeWebSocket() {
