@@ -635,6 +635,9 @@ for (let i = 0; i < backgroundStarCount; i++) {
 
 console.log(`🌟 배경 별 ${backgroundStarCount}개 생성 완료 (반지름: ${backgroundSphereRadius})`);
 
+// URL 파라미터에서 별자리 데이터 확인
+loadConstellationFromURL();
+
 // localStorage에서 IPAD_ATSER 별자리 로드
 loadConstellationsFromLocalStorage();
 
@@ -925,6 +928,32 @@ window.addEventListener('resize', () => {
 });
 
 // -- STEP 4: WebSocket 실시간 별 추가 기능 --
+
+// URL 파라미터에서 별자리 데이터 로드
+function loadConstellationFromURL() {
+    try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const constellationParam = urlParams.get('constellation');
+        
+        if (!constellationParam) {
+            console.log('📭 URL에 별자리 데이터가 없습니다.');
+            return;
+        }
+        
+        const constellation = JSON.parse(decodeURIComponent(constellationParam));
+        console.log('🌟 URL에서 별자리 데이터 발견:', constellation);
+        
+        // 별자리를 3D 공간에 추가
+        addConstellationToUniverse(constellation);
+        showNotification(`✨ ${constellation.userName}님의 별자리가 우주에 추가되었습니다!`, 'new-star');
+        
+        // URL에서 파라미터 제거 (새로고침 시 중복 추가 방지)
+        window.history.replaceState({}, document.title, window.location.pathname);
+        
+    } catch (error) {
+        console.error('❌ URL 별자리 로드 실패:', error);
+    }
+}
 
 // localStorage에서 IPAD_ATSER에서 생성된 별자리 불러오기
 function loadConstellationsFromLocalStorage() {
