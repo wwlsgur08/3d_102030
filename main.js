@@ -117,6 +117,51 @@ window.addEventListener('resize', function() {
 
 
 // clearTestStars를 전역 함수로 만들기
+// Firebase에서 모든 별자리 삭제
+window.clearAllConstellations = function() {
+    const confirmation = confirm('⚠️ Firebase에 저장된 모든 별자리를 삭제하시겠습니까?\n\n이 작업은 되돌릴 수 없습니다!');
+    
+    if (!confirmation) {
+        return;
+    }
+    
+    try {
+        const database = window.firebaseDatabase;
+        
+        // Firebase에서 모든 별자리 삭제
+        database.ref('constellations').remove()
+            .then(() => {
+                console.log('🗑️ Firebase 별자리 모두 삭제 완료');
+                
+                // 화면에서 IPAD_ATSER에서 온 별들 제거
+                const ipadStars = stars.filter(star => star.userData.isFromIPAD);
+                ipadStars.forEach(star => {
+                    const index = stars.indexOf(star);
+                    if (index > -1) {
+                        stars.splice(index, 1);
+                    }
+                    scene.remove(star);
+                });
+                
+                // 후광 제거
+                removeCurrentHalo();
+                currentNewestStar = null;
+                
+                showNotification(`🗑️ ${ipadStars.length}개의 별자리가 삭제되었습니다`, 'success');
+                console.log(`✅ ${ipadStars.length}개 별자리 삭제 완료`);
+            })
+            .catch(error => {
+                console.error('❌ Firebase 삭제 실패:', error);
+                showNotification('❌ 삭제 실패: ' + error.message, 'error');
+            });
+            
+    } catch (error) {
+        console.error('❌ 별자리 삭제 오류:', error);
+        showNotification('❌ 오류 발생: ' + error.message, 'error');
+    }
+};
+
+// 이전 테스트 별 삭제 함수 (호환성 유지)
 window.clearTestStars = function() {
     const testStars = stars.filter(star => star.userData.isNewStar);
     
