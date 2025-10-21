@@ -1160,6 +1160,11 @@ function setNewestStar(star) {
 function focusOnNewestStar() {
     if (!currentNewestStar) return;
     
+    // 회전 일시 정지 및 타이머 리셋 (3분간 정지)
+    autoRotate = false;
+    lastInteractionTime = Date.now();
+    console.log('🛑 새 별 추가로 회전 일시 정지 (3분간)');
+    
     // 카메라만 이동하고 회전축은 중앙에 고정
     controls.enabled = false;
     const targetPosition = new THREE.Vector3();
@@ -1183,7 +1188,7 @@ function focusOnNewestStar() {
     });
     
     // controls.target은 (0,0,0)으로 유지 - 회전축 중앙 고정
-    console.log('🎯 새 별에 시점만 이동 (회전축 중앙 고정)');
+    console.log('🎯 새 별에 시점만 이동 (회전축 중앙 고정, 3분 후 회전 재개)');
 }
 
 // 영구 후광 추가 (가장 최근 별용)
