@@ -6,6 +6,7 @@ import { gsap } from 'gsap';
 let socket = null;
 let currentNewestStar = null; // 가장 최근 별 (후광 표시용)
 let currentHalo = null; // 현재 후광 객체
+const pageLoadTime = Date.now(); // 페이지 로드 시간 기록
 
 // 온보딩 시스템 변수
 let onboardingStep = 0; // 현재 온보딩 단계 (0: 비활성, 1-6: 각 단계)
@@ -635,16 +636,13 @@ for (let i = 0; i < backgroundStarCount; i++) {
 
 console.log(`🌟 배경 별 ${backgroundStarCount}개 생성 완료 (반지름: ${backgroundSphereRadius})`);
 
-// Firebase Realtime Database 리스너 설정
+// Firebase Realtime Database 리스너 설정 (기존 별자리 로드 + 실시간 감지)
 setupFirebaseListener();
-
-// 저장된 별자리들 불러오기 (페이지 새로고침 시 복원)
-loadSavedConstellations();
 
 // URL 파라미터에서 별자리 데이터 확인
 loadConstellationFromURL();
 
-// localStorage에서 IPAD_ATSER 별자리 로드
+// localStorage에서 IPAD_ATSER 별자리 로드 (임시 전달용)
 loadConstellationsFromLocalStorage();
 
 // -- STEP 3: 인터랙션 설정 --
@@ -943,26 +941,43 @@ function setupFirebaseListener() {
         
         console.log('🔥 Firebase 실시간 리스너 설정 중...');
         
-        // 새로운 별자리가 추가되면 실행
+        // 처음 로드 시 기존 모든 별자리 불러오기
+        constellationsRef.once('value', (snapshot) => {
+            const allConstellations = snapshot.val();
+            if (allConstellations) {
+                const constellationArray = Object.values(allConstellations);
+                console.log(`📚 Firebase에서 ${constellationArray.length}개의 기존 별자리 불러옴`);
+                
+                constellationArray.forEach(constellation => {
+                    addConstellationToUniverse(constellation);
+                });
+                
+                if (constellationArray.length > 0) {
+                    showNotification(`💫 ${constellationArray.length}개의 별자리를 불러왔습니다!`, 'success');
+                }
+            } else {
+                console.log('📭 Firebase에 저장된 별자리가 없습니다.');
+            }
+        });
+        
+        // 새로운 별자리가 추가되면 실행 (실시간 감지)
         constellationsRef.on('child_added', (snapshot) => {
             const constellation = snapshot.val();
             const constellationId = snapshot.key;
             
-            console.log('✨ 새로운 별자리 감지!', constellation);
+            // 이미 로드된 별자리인지 체크 (초기 로드 시 중복 방지)
+            const isInitialLoad = Date.now() - pageLoadTime < 5000; // 페이지 로드 후 5초 이내
+            if (isInitialLoad) {
+                return; // 초기 로드는 once로 처리했으므로 무시
+            }
+            
+            console.log('✨ 새로운 별자리 실시간 감지!', constellation);
             
             // 별자리를 3D 공간에 추가
             addConstellationToUniverse(constellation);
             
-            // localStorage에 저장 (페이지 새로고침 시에도 유지)
-            saveConstellationToLocalStorage(constellation);
-            
             // 알림 표시
             showNotification(`✨ ${constellation.userName}님의 별자리가 추가되었습니다!`, 'new-star');
-            
-            // Firebase에서 데이터 삭제 (중복 추가 방지)
-            database.ref(`constellations/${constellationId}`).remove()
-                .then(() => console.log('🗑️ Firebase 데이터 정리 완료'))
-                .catch(err => console.error('❌ 데이터 삭제 실패:', err));
         });
         
         console.log('✅ Firebase 리스너 활성화 완료!');
