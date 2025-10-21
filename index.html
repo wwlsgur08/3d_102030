@@ -653,12 +653,40 @@
             -webkit-backdrop-filter: blur(12px);
             color: #cbd5e1;
             padding: 30px;
+            padding-top: 40px;
             border-radius: 24px;
             text-align: center;
             max-width: 400px;
             border: 1px solid rgba(34, 211, 238, 0.3);
             box-shadow: 0 20px 60px rgba(34, 211, 238, 0.3), 0 0 40px rgba(34, 211, 238, 0.15);
             animation: bounceIn 0.6s ease-out;
+            position: relative;
+        }
+        
+        /* X 닫기 버튼 */
+        #onboarding-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #67e8f9;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            pointer-events: auto;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        #onboarding-close:hover {
+            color: #22d3ee;
+            background: rgba(34, 211, 238, 0.1);
+            transform: rotate(90deg);
         }
         
         #onboarding-icon {
@@ -682,31 +710,40 @@
             text-shadow: 0 0 10px rgba(103, 232, 249, 0.3);
         }
         
-        #onboarding-skip {
-            background: linear-gradient(to right, rgba(34, 211, 238, 0.2), rgba(20, 184, 166, 0.2));
-            border: 1px solid rgba(34, 211, 238, 0.3);
-            color: #67e8f9;
-            padding: 8px 16px;
-            border-radius: 8px;
+        /* 다음/완료 버튼 */
+        #onboarding-next {
+            background: linear-gradient(to right, #22d3ee, #14b8a6);
+            border: none;
+            color: #0f172a;
+            padding: 12px 30px;
+            border-radius: 12px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 16px;
+            font-weight: 600;
             transition: all 0.3s ease;
             pointer-events: auto;
+            box-shadow: 0 4px 15px rgba(34, 211, 238, 0.3);
         }
         
-        #onboarding-skip:hover {
-            background: linear-gradient(to right, rgba(34, 211, 238, 0.3), rgba(20, 184, 166, 0.3));
-            border-color: #22d3ee;
-            color: #22d3ee;
-            box-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
+        #onboarding-next:hover {
+            background: linear-gradient(to right, #06b6d4, #0d9488);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(34, 211, 238, 0.4);
         }
         
         /* 모바일 온보딩 최적화 */
         @media screen and (max-width: 480px) {
             #onboarding-content {
                 padding: 20px;
+                padding-top: 40px;
                 max-width: 90vw;
                 border-radius: 10px;
+            }
+            
+            #onboarding-close {
+                top: 10px;
+                right: 15px;
+                font-size: 20px;
             }
             
             #onboarding-icon {
@@ -722,6 +759,11 @@
             #onboarding-progress {
                 font-size: 12px;
                 margin-bottom: 10px;
+            }
+            
+            #onboarding-next {
+                font-size: 14px;
+                padding: 10px 25px;
             }
         }
         
@@ -813,10 +855,11 @@
     <!-- 온보딩 오버레이 -->
     <div id="onboarding-overlay">
         <div id="onboarding-content">
+            <button id="onboarding-close" onclick="skipOnboarding()">×</button>
             <div id="onboarding-icon">🖱️</div>
             <div id="onboarding-message">마우스로 드래그해서 우주를 돌려보세요!</div>
             <div id="onboarding-progress">1 / 6</div>
-            <button id="onboarding-skip" onclick="skipOnboarding()">건너뛰기</button>
+            <button id="onboarding-next">다음</button>
         </div>
     </div>
     

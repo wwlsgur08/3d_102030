@@ -1293,6 +1293,15 @@ function startOnboarding() {
     onboardingStep = 1;
     onboardingActive = true;
     showOnboardingStep();
+    
+    // "다음" 버튼 클릭 이벤트 등록
+    const nextBtn = document.getElementById('onboarding-next');
+    if (nextBtn) {
+        nextBtn.onclick = function() {
+            nextOnboardingStep();
+        };
+    }
+    
     console.log('🎓 온보딩 시작!');
 }
 
@@ -1304,6 +1313,7 @@ function showOnboardingStep() {
     const icon = document.getElementById('onboarding-icon');
     const message = document.getElementById('onboarding-message');
     const progress = document.getElementById('onboarding-progress');
+    const nextBtn = document.getElementById('onboarding-next');
     const dragHint = document.getElementById('drag-hint');
     
     const currentStep = ONBOARDING_STEPS[onboardingStep - 1];
@@ -1312,6 +1322,13 @@ function showOnboardingStep() {
     icon.textContent = currentStep.icon;
     message.textContent = currentStep.message;
     progress.textContent = `${onboardingStep} / ${ONBOARDING_STEPS.length}`;
+    
+    // 마지막 단계면 "완료" 버튼으로 변경
+    if (onboardingStep === ONBOARDING_STEPS.length) {
+        nextBtn.textContent = '완료';
+    } else {
+        nextBtn.textContent = '다음';
+    }
     
     // 오버레이 표시
     overlay.style.display = 'flex';
