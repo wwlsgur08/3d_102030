@@ -690,22 +690,10 @@ function getNormalizedCoordinates(clientX, clientY) {
 // 별 상세보기 실행 함수 (공통)
 function showStarDetail(normalizedCoords) {
     raycaster.setFromCamera(new THREE.Vector2(normalizedCoords.x, normalizedCoords.y), camera);
-    
-    // 씬의 모든 객체를 재귀적으로 검사 (별자리 그룹 안의 별들도 포함)
-    const intersects = raycaster.intersectObjects(scene.children, true);
+    const intersects = raycaster.intersectObjects(stars);
     
     if (intersects.length > 0) {
-        // 클릭된 객체 찾기 (Mesh만)
-        let clickedStar = null;
-        for (let intersect of intersects) {
-            if (intersect.object instanceof THREE.Mesh && intersect.object.geometry instanceof THREE.SphereGeometry) {
-                clickedStar = intersect.object;
-                break;
-            }
-        }
-        
-        if (!clickedStar) return false;
-        
+        const clickedStar = intersects[0].object;
         controls.enabled = false;
         const targetPosition = new THREE.Vector3();
         clickedStar.getWorldPosition(targetPosition);
@@ -732,31 +720,10 @@ function showStarDetail(normalizedCoords) {
             },
             onComplete: () => {
                 const data = clickedStar.userData;
-                
-                // 별자리 그룹인 경우 (IPAD_ATSER에서 온 데이터)
-                if (data.constellationName) {
-                    // 별자리 전체 정보 표시
-                    const constellation = clickedStar.parent.userData.constellation;
-                    
-                    document.getElementById('detail-name').innerText = constellation.name;
-                    document.getElementById('constellation-image').src = 'star_background.png'; // 기본 이미지
-                    
-                    const charmsHTML = constellation.charms.map(charm => 
-                        `${charm.name} ⭐${charm.level} (${charm.category})`
-                    ).join('<br>');
-                    document.getElementById('charms').innerHTML = charmsHTML;
-                    
-                    document.getElementById('comment').innerText = 
-                        `${constellation.userName}님의 ${constellation.charms.length}개 매력으로 이루어진 별자리입니다. 총 레벨: ${constellation.totalLevel}`;
-                    
-                } else {
-                    // 기존 별 정보 표시
-                    document.getElementById('detail-name').innerText = data.name;
-                    document.getElementById('constellation-image').src = data.image;
-                    document.getElementById('charms').innerHTML = data.charms.join('<br>');
-                    document.getElementById('comment').innerText = data.comment;
-                }
-                
+                document.getElementById('detail-name').innerText = data.name;
+                document.getElementById('constellation-image').src = data.image;
+                document.getElementById('charms').innerHTML = data.charms.join('<br>');
+                document.getElementById('comment').innerText = data.comment;
                 detailPanel.style.display = 'block';
             }
         });
@@ -1053,131 +1020,24 @@ function loadConstellationsFromLocalStorage() {
 
 // 별자리를 3D 우주에 추가하는 함수
 function addConstellationToUniverse(constellation) {
-    console.log(`🌟 별자리 "${constellation.name}" 생성 시작:`, constellation);
+    // 별자리 데이터를 별 형식으로 변환
+    const charmsText = constellation.charms.map(charm => 
+        `${charm.name} ★${charm.level}`
+    );
     
-    // 별자리 그룹 생성
-    const constellationGroup = new THREE.Group();
-    constellationGroup.userData.constellation = constellation;
-    constellationGroup.userData.type = 'constellation';
+    const starData = {
+        name: constellation.name,
+        simpleDescription: `${constellation.userName}님의 매력 별자리 (총 레벨: ${constellation.totalLevel})`,
+        charms: charmsText,
+        comment: `${constellation.charms.length}개의 핵심 매력으로 이루어진 ${constellation.userName}님만의 특별한 별자리입니다.`,
+        image: 'star_background.png', // 기본 이미지 사용
+        timestamp: constellation.timestamp,
+        isFromIPAD: true
+    };
     
-    // 랜덤한 위치 생성 (우주 공간 내)
-    const baseRadius = 300;
-    const theta = Math.random() * Math.PI * 2;
-    const phi = Math.random() * Math.PI;
-    const baseX = baseRadius * Math.sin(phi) * Math.cos(theta);
-    const baseY = baseRadius * Math.sin(phi) * Math.sin(theta);
-    const baseZ = baseRadius * Math.cos(phi);
-    
-    const stars = [];
-    const starMeshes = [];
-    
-    // 각 charm을 별로 생성
-    constellation.charms.forEach((charm, index) => {
-        // position 정보를 사용해서 상대적 위치 계산 (카드의 %를 3D 공간 좌표로 변환)
-        const relativeX = (charm.position.x - 50) * 0.5; // -25 ~ 25 범위
-        const relativeY = (50 - charm.position.y) * 0.5; // -25 ~ 25 범위 (Y축 반전)
-        const relativeZ = (index - constellation.charms.length / 2) * 3; // 약간의 깊이감
-        
-        // 별 크기는 level에 비례 (2 ~ 8)
-        const starSize = 2 + (charm.level * 0.8);
-        
-        // 별 색상 결정 (starImage에서 색상 추출)
-        let color;
-        if (charm.starImage) {
-            if (charm.starImage.includes('pink')) color = 0xD726BD;
-            else if (charm.starImage.includes('skyblue')) color = 0x1A99B6;
-            else if (charm.starImage.includes('yellow')) color = 0xCD9F1F;
-            else if (charm.starImage.includes('green')) color = 0x1BC14D;
-            else if (charm.starImage.includes('blue')) color = 0x4169E1;
-            else if (charm.starImage.includes('orange')) color = 0xD1791A;
-            else if (charm.starImage.includes('red')) color = 0xCE2629;
-            else color = 0xffffff;
-        } else {
-            color = 0xffffff;
-        }
-        
-        // 별 생성
-        const starGeometry = new THREE.SphereGeometry(starSize, 16, 16);
-        const starMaterial = new THREE.MeshPhongMaterial({
-            color: color,
-            emissive: color,
-            emissiveIntensity: 0.5,
-            shininess: 100
-        });
-        
-        const starMesh = new THREE.Mesh(starGeometry, starMaterial);
-        starMesh.position.set(relativeX, relativeY, relativeZ);
-        
-        // 별 데이터 저장
-        starMesh.userData = {
-            charmName: charm.name,
-            level: charm.level,
-            category: charm.category,
-            constellationName: constellation.name,
-            userName: constellation.userName
-        };
-        
-        constellationGroup.add(starMesh);
-        stars.push({ x: relativeX, y: relativeY, z: relativeZ });
-        starMeshes.push(starMesh);
-        
-        console.log(`  ⭐ "${charm.name}" 별 생성 (레벨: ${charm.level}, 크기: ${starSize.toFixed(1)})`);
-    });
-    
-    // 연결선 생성
-    if (constellation.lines && constellation.lines.length > 0) {
-        console.log(`  🔗 ${constellation.lines.length}개의 연결선 생성 중...`);
-        
-        constellation.lines.forEach(line => {
-            const startCharm = constellation.charms.find(c => c.name === line.start);
-            const endCharm = constellation.charms.find(c => c.name === line.end);
-            
-            if (startCharm && endCharm) {
-                const startIndex = constellation.charms.indexOf(startCharm);
-                const endIndex = constellation.charms.indexOf(endCharm);
-                
-                if (startIndex !== -1 && endIndex !== -1) {
-                    const startPos = stars[startIndex];
-                    const endPos = stars[endIndex];
-                    
-                    const points = [
-                        new THREE.Vector3(startPos.x, startPos.y, startPos.z),
-                        new THREE.Vector3(endPos.x, endPos.y, endPos.z)
-                    ];
-                    
-                    const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
-                    const lineMaterial = new THREE.LineBasicMaterial({
-                        color: 0x22d3ee,
-                        opacity: 0.6,
-                        transparent: true
-                    });
-                    
-                    const lineMesh = new THREE.Line(lineGeometry, lineMaterial);
-                    constellationGroup.add(lineMesh);
-                }
-            }
-        });
-    }
-    
-    // 별자리 그룹 위치 설정
-    constellationGroup.position.set(baseX, baseY, baseZ);
-    
-    // 씬에 추가
-    scene.add(constellationGroup);
-    
-    // 카메라 애니메이션 (새 별자리로 이동)
-    gsap.to(camera.position, {
-        duration: 2,
-        x: baseX * 0.7,
-        y: baseY * 0.7,
-        z: baseZ * 0.7,
-        ease: "power2.inOut",
-        onUpdate: () => {
-            camera.lookAt(baseX, baseY, baseZ);
-        }
-    });
-    
-    console.log(`✅ "${constellation.name}" 별자리 생성 완료! (별 ${starMeshes.length}개, 연결선 ${constellation.lines?.length || 0}개)`);
+    // 기존 addNewStarToUniverse 함수 활용
+    addNewStarToUniverse(starData);
+    console.log(`✨ "${constellation.name}" 별자리 추가 완료`);
 }
 
 function initializeWebSocket() {
