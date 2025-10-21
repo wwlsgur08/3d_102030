@@ -635,6 +635,9 @@ for (let i = 0; i < backgroundStarCount; i++) {
 
 console.log(`🌟 배경 별 ${backgroundStarCount}개 생성 완료 (반지름: ${backgroundSphereRadius})`);
 
+// Firebase Realtime Database 리스너 설정
+setupFirebaseListener();
+
 // URL 파라미터에서 별자리 데이터 확인
 loadConstellationFromURL();
 
@@ -928,6 +931,40 @@ window.addEventListener('resize', () => {
 });
 
 // -- STEP 4: WebSocket 실시간 별 추가 기능 --
+
+// Firebase Realtime Database에서 실시간으로 새 별자리 감지
+function setupFirebaseListener() {
+    try {
+        const database = window.firebaseDatabase;
+        const constellationsRef = database.ref('constellations');
+        
+        console.log('🔥 Firebase 실시간 리스너 설정 중...');
+        
+        // 새로운 별자리가 추가되면 실행
+        constellationsRef.on('child_added', (snapshot) => {
+            const constellation = snapshot.val();
+            const constellationId = snapshot.key;
+            
+            console.log('✨ 새로운 별자리 감지!', constellation);
+            
+            // 별자리를 3D 공간에 추가
+            addConstellationToUniverse(constellation);
+            
+            // 알림 표시
+            showNotification(`✨ ${constellation.userName}님의 별자리가 추가되었습니다!`, 'new-star');
+            
+            // Firebase에서 데이터 삭제 (중복 추가 방지)
+            database.ref(`constellations/${constellationId}`).remove()
+                .then(() => console.log('🗑️ Firebase 데이터 정리 완료'))
+                .catch(err => console.error('❌ 데이터 삭제 실패:', err));
+        });
+        
+        console.log('✅ Firebase 리스너 활성화 완료!');
+        
+    } catch (error) {
+        console.error('❌ Firebase 리스너 설정 실패:', error);
+    }
+}
 
 // URL 파라미터에서 별자리 데이터 로드
 function loadConstellationFromURL() {
