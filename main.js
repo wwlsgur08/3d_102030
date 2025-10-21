@@ -1455,8 +1455,8 @@ function completeOnboarding() {
 
 // 온보딩 건너뛰기 함수
 window.skipOnboarding = function() {
+    console.log('⏭️ 온보딩 건너뛰기 버튼 클릭됨 (현재 단계:', onboardingStep, ')');
     completeOnboarding();
-    console.log('⏭️ 온보딩 건너뛰기');
 }
 
 

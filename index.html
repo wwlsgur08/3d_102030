@@ -855,7 +855,7 @@
     <!-- 온보딩 오버레이 -->
     <div id="onboarding-overlay">
         <div id="onboarding-content">
-            <button id="onboarding-close" onclick="skipOnboarding()">×</button>
+            <button id="onboarding-close" onclick="event.stopPropagation(); window.skipOnboarding(); return false;">×</button>
             <div id="onboarding-icon">🖱️</div>
             <div id="onboarding-message">마우스로 드래그해서 우주를 돌려보세요!</div>
             <div id="onboarding-progress">1 / 6</div>
