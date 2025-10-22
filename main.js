@@ -1142,10 +1142,10 @@ function addConstellationToUniverse(constellation) {
     );
     
     const starData = {
-        name: constellation.name,
-        simpleDescription: `${constellation.userName}님의 매력 별자리 (총 레벨: ${constellation.totalLevel})`,
+        name: constellation.name, // 사용자가 입력한 이름
+        simpleDescription: constellation.description || `${constellation.userName}님의 매력 별자리 (총 레벨: ${constellation.totalLevel})`, // 사용자가 입력한 설명
         charms: charmsText,
-        comment: `${constellation.charms.length}개의 핵심 매력으로 이루어진 ${constellation.userName}님만의 특별한 별자리입니다.`,
+        comment: constellation.description || `${constellation.charms.length}개의 핵심 매력으로 이루어진 ${constellation.userName}님만의 특별한 별자리입니다.`,
         image: constellation.cardImage || 'star_background.png', // 카드 이미지 사용
         timestamp: constellation.timestamp,
         isFromIPAD: true
