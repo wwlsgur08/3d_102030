@@ -2,6 +2,17 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { gsap } from 'gsap';
 
+// Base64를 Blob으로 변환하는 유틸리티 함수
+function base64ToBlob(base64, mimeType) {
+    const byteCharacters = atob(base64);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    return new Blob([byteArray], { type: mimeType });
+}
+
 // 전역 변수들 
 let socket = null;
 let currentNewestStar = null; // 가장 최근 별 (후광 표시용)
@@ -770,6 +781,49 @@ function showStarDetail(normalizedCoords) {
                 document.getElementById('constellation-image').src = data.image;
                 document.getElementById('charms').innerHTML = data.charms.join('<br>');
                 document.getElementById('comment').innerText = data.comment;
+                
+                // 벨소리 데이터 확인 및 표시
+                const alarmMusicSection = document.getElementById('alarm-music-section');
+                const alarmAudio = document.getElementById('alarm-audio');
+                const playAlarmBtn = document.getElementById('play-alarm-btn');
+                const alarmTrackTitle = document.getElementById('alarm-track-title');
+                
+                if (data.alarmMusic && data.alarmMusic.audio_base64) {
+                    // 벨소리가 있으면 섹션 표시
+                    alarmMusicSection.style.display = 'block';
+                    alarmTrackTitle.textContent = data.alarmMusic.trackTitle || '매력 벨소리';
+                    
+                    // 오디오 소스 설정
+                    const audioBlob = base64ToBlob(data.alarmMusic.audio_base64, data.alarmMusic.mime || 'audio/wav');
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    alarmAudio.src = audioUrl;
+                    
+                    // 재생 버튼 이벤트 (기존 리스너 제거 후 새로 추가)
+                    const newPlayBtn = playAlarmBtn.cloneNode(true);
+                    playAlarmBtn.parentNode.replaceChild(newPlayBtn, playAlarmBtn);
+                    
+                    newPlayBtn.addEventListener('click', () => {
+                        if (alarmAudio.paused) {
+                            alarmAudio.play();
+                            newPlayBtn.textContent = '⏸ 일시정지';
+                        } else {
+                            alarmAudio.pause();
+                            newPlayBtn.textContent = '▶ 재생';
+                        }
+                    });
+                    
+                    // 재생 완료시 버튼 텍스트 복원
+                    alarmAudio.addEventListener('ended', () => {
+                        newPlayBtn.textContent = '▶ 재생';
+                    });
+                    
+                    console.log('🎵 벨소리 로드 완료:', data.alarmMusic.trackTitle);
+                } else {
+                    // 벨소리가 없으면 섹션 숨김
+                    alarmMusicSection.style.display = 'none';
+                    console.log('📭 벨소리 없음');
+                }
+                
                 detailPanel.style.display = 'block';
             }
         });

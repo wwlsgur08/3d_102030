@@ -880,6 +880,24 @@
                     <div id="charms-label">매력, 매력도</div>
                     <div id="charms"></div>
                 </div>
+                <!-- 벨소리 플레이어 -->
+                <div id="alarm-music-section" style="display: none; margin-top: 20px;">
+                    <div style="color: #67e8f9; font-size: 14px; font-weight: 600; margin-bottom: 10px;">🎵 매력 벨소리</div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <button id="play-alarm-btn" style="
+                            padding: 8px 16px;
+                            background: linear-gradient(to right, #22d3ee, #14b8a6);
+                            border: none;
+                            border-radius: 8px;
+                            color: #0f172a;
+                            font-weight: 600;
+                            cursor: pointer;
+                            font-size: 14px;
+                        ">▶ 재생</button>
+                        <span id="alarm-track-title" style="color: #cbd5e1; font-size: 13px;"></span>
+                    </div>
+                    <audio id="alarm-audio" preload="none"></audio>
+                </div>
             </div>
         </div>
     </div>
