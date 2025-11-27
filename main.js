@@ -1559,8 +1559,11 @@ function updateZoomIndicator() {
     const defaultDistance = 2.0; // 기본값
     
     // 100%를 기준으로 계산 (거리가 가까울수록 확대)
-    const zoomPercent = Math.round(((maxDistance - currentDistance) / (maxDistance - minDistance)) * 100);
-    const clampedPercent = Math.max(0, Math.min(100, zoomPercent));
+    const rawPercent = ((maxDistance - currentDistance) / (maxDistance - minDistance)) * 100;
+    
+    // 53%를 0%로, 100%를 100%로 리매핑 (53~100 범위를 0~100으로)
+    const remappedPercent = Math.round(((rawPercent - 53) / (100 - 53)) * 100);
+    const clampedPercent = Math.max(0, Math.min(100, remappedPercent));
     
     zoomBarFill.style.height = clampedPercent + '%';
     zoomValue.textContent = clampedPercent + '%';
