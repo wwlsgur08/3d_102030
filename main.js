@@ -1237,10 +1237,13 @@ function addNewStarToUniverse(starData) {
     // 이전 후광 제거
     removeCurrentHalo();
     
-    // 더미 데이터 교체가 필요한 경우
-    if (starData.replaceDummyId) {
-        replaceDummyWithNewStar(starData);
-        return;
+    // 더미 별 하나 찾아서 제거
+    const dummyIndex = stars.findIndex(star => !star.userData.isNewStar);
+    if (dummyIndex !== -1) {
+        const dummyStar = stars[dummyIndex];
+        scene.remove(dummyStar);
+        stars.splice(dummyIndex, 1);
+        console.log(`🗑️ 더미 별 제거 (남은 더미: ${stars.filter(s => !s.userData.isNewStar).length}개)`);
     }
     
     // 새로운 별 생성 (일반 추가)
@@ -1282,10 +1285,12 @@ function addNewStarToUniverse(starData) {
     // 새 별로 카메라 자동 이동 (부드럽게)
     focusOnNewestStar();
     
-    console.log(`🌟 새로운 별 "${starData.name}" 추가 완료! (총 ${stars.length}개)`);
+    console.log(`🌟 새로운 별 "${starData.name}" 추가 완료! (총 ${stars.length}개, 실제: ${stars.filter(s => s.userData.isNewStar).length}개)`);
 }
 
-// 더미 데이터를 실제 별자리로 교체
+// [DEPRECATED] 더미 데이터를 실제 별자리로 교체 (더 이상 사용하지 않음)
+// 이제 더미는 삭제되고, 실제 별은 새로운 랜덤 위치에 추가됩니다
+/*
 function replaceDummyWithNewStar(starData) {
     const dummyId = starData.replaceDummyId;
     
@@ -1319,6 +1324,7 @@ function replaceDummyWithNewStar(starData) {
     
     console.log(`🔄 더미 별자리 ID ${dummyId}를 "${starData.name}"로 교체 완료!`);
 }
+*/
 
 // 최신 별 설정 및 후광 추가
 function setNewestStar(star) {
