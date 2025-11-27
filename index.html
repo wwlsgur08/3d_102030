@@ -873,6 +873,223 @@
                 transform: translate(0, 0);
             }
         }
+
+        /* 4K 해상도 최적화 (3840 x 2160) */
+        @media screen and (min-width: 2500px) {
+
+            /* 툴팁 크기 증가 */
+            #tooltip {
+                padding: 20px 28px;
+                border-radius: 24px;
+                border-width: 2px;
+            }
+
+            #tooltip h3 {
+                font-size: 24px;
+            }
+
+            #tooltip p {
+                font-size: 18px;
+                margin-top: 8px;
+            }
+
+            /* 상세 패널 크기 증가 */
+            #detail-panel {
+                width: 1400px;
+                height: 900px;
+                border-radius: 40px;
+                border-width: 2px;
+            }
+
+            #image-section {
+                width: 700px;
+                height: 700px;
+                padding: 60px;
+            }
+
+            #detail-panel #constellation-image {
+                max-width: 600px;
+                max-height: 600px;
+                border-radius: 20px;
+                border-width: 2px;
+            }
+
+            #info-section {
+                padding: 60px;
+            }
+
+            #detail-panel h2 {
+                font-size: 42px;
+                margin-bottom: 20px;
+            }
+
+            #detail-panel #comment {
+                font-size: 24px;
+                margin-bottom: 24px;
+                line-height: 1.8;
+            }
+
+            #charms-label {
+                font-size: 28px;
+                margin-bottom: 16px;
+            }
+
+            #detail-panel #charms {
+                font-size: 24px;
+                line-height: 1.6;
+            }
+
+            /* 닫기 버튼 크기 증가 */
+            #close-btn {
+                top: 30px;
+                right: 40px;
+                font-size: 48px;
+            }
+
+            /* 줌 인디케이터 크기 증가 */
+            #zoom-indicator {
+                right: 40px;
+                padding: 25px 20px;
+                border-radius: 24px;
+                gap: 20px;
+                border-width: 2px;
+            }
+
+            #zoom-label {
+                font-size: 16px;
+                letter-spacing: 2px;
+            }
+
+            #zoom-bar-container {
+                width: 12px;
+                height: 240px;
+                border-radius: 6px;
+                border-width: 2px;
+            }
+
+            #zoom-bar-fill {
+                border-radius: 6px;
+            }
+
+            #zoom-value {
+                font-size: 20px;
+            }
+
+            /* 인트로 화면 요소 크기 증가 */
+            #intro-logo {
+                width: 600px;
+                margin-bottom: 40px;
+            }
+
+            #intro-title {
+                width: 900px;
+                margin-bottom: 60px;
+            }
+
+            #intro-button {
+                width: 520px;
+                min-height: 88px;
+            }
+
+            /* 도움말 패널 크기 증가 */
+            #help-panel {
+                top: 40px;
+                right: 40px;
+                padding: 30px;
+                font-size: 24px;
+                border-radius: 24px;
+                min-width: 350px;
+                border-width: 2px;
+            }
+
+            #help-panel h3 {
+                font-size: 28px;
+                margin-bottom: 20px;
+                padding-bottom: 10px;
+            }
+
+            #help-panel .help-item {
+                margin-bottom: 16px;
+            }
+
+            #help-panel .help-key {
+                padding: 4px 12px;
+                border-radius: 10px;
+                font-size: 20px;
+                min-width: 140px;
+            }
+
+            #help-panel .help-desc {
+                font-size: 20px;
+            }
+
+            #help-toggle-btn {
+                top: 40px;
+                right: 40px;
+                width: 80px;
+                height: 80px;
+                font-size: 36px;
+                border-width: 2px;
+            }
+
+            /* 온보딩 오버레이 크기 증가 */
+            #onboarding-content {
+                padding: 60px;
+                padding-top: 80px;
+                border-radius: 40px;
+                max-width: 800px;
+                border-width: 2px;
+            }
+
+            #onboarding-close {
+                top: 30px;
+                right: 40px;
+                font-size: 48px;
+                width: 60px;
+                height: 60px;
+            }
+
+            #onboarding-icon {
+                font-size: 96px;
+                margin-bottom: 30px;
+            }
+
+            #onboarding-message {
+                font-size: 36px;
+                margin-bottom: 40px;
+            }
+
+            #onboarding-progress {
+                font-size: 28px;
+                margin-bottom: 30px;
+            }
+
+            #onboarding-next {
+                padding: 24px 60px;
+                border-radius: 24px;
+                font-size: 32px;
+            }
+
+            /* 알람 뮤직 섹션 */
+            #alarm-music-section {
+                margin-top: 40px !important;
+            }
+
+            #alarm-music-section>div:first-child {
+                font-size: 24px !important;
+                margin-bottom: 20px !important;
+            }
+
+            #play-alarm-btn {
+                padding: 16px 32px !important;
+                border-radius: 16px !important;
+                font-size: 24px !important;
+            }
+
+            #alarm-track-title {
+                font-size: 22px !important;
+            }
+        }
     </style>
 </head>
 
