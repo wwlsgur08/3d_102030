@@ -1,20 +1,25 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Aster Project</title>
     <style>
-        body { 
-            margin: 0; 
-            overflow: hidden; 
-            font-family: sans-serif; 
-            touch-action: pan-x pan-y; /* 줌과 회전 제스처 비활성화, 패닝만 허용 */
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: sans-serif;
+            touch-action: pan-x pan-y;
+            /* 줌과 회전 제스처 비활성화, 패닝만 허용 */
         }
-        canvas { 
-            display: block; 
-            touch-action: none; /* 캔버스에서 모든 터치 제스처 비활성화 */
+
+        canvas {
+            display: block;
+            touch-action: none;
+            /* 캔버스에서 모든 터치 제스처 비활성화 */
         }
+
         /* 마우스 호버 시 나타날 툴팁 스타일 */
         #tooltip {
             position: absolute;
@@ -29,15 +34,17 @@
             box-shadow: 0 8px 32px rgba(34, 211, 238, 0.15), 0 0 15px rgba(34, 211, 238, 0.1);
             pointer-events: none;
         }
-        #tooltip h3 { 
-            margin: 0; 
-            font-size: 16px; 
+
+        #tooltip h3 {
+            margin: 0;
+            font-size: 16px;
             color: #67e8f9;
             font-weight: 600;
         }
-        #tooltip p { 
-            margin: 5px 0 0; 
-            font-size: 12px; 
+
+        #tooltip p {
+            margin: 5px 0 0;
+            font-size: 12px;
             color: #cbd5e1;
         }
 
@@ -59,7 +66,7 @@
             border: 1px solid rgba(34, 211, 238, 0.3);
             box-shadow: 0 20px 60px rgba(34, 211, 238, 0.2), 0 0 30px rgba(34, 211, 238, 0.1);
         }
-        
+
         /* 모바일 상세 패널 최적화 */
         @media screen and (max-width: 480px) {
             #detail-panel {
@@ -70,7 +77,7 @@
                 border-radius: 10px;
             }
         }
-        
+
         @media screen and (max-width: 360px) {
             #detail-panel {
                 width: 95vw;
@@ -80,12 +87,12 @@
                 border-radius: 8px;
             }
         }
-        
+
         #detail-content {
             display: flex;
             height: 100%;
         }
-        
+
         #image-section {
             flex: none;
             width: 420px;
@@ -98,7 +105,7 @@
             border-right: 1px solid rgba(34, 211, 238, 0.2);
             align-self: center;
         }
-        
+
         #detail-panel #constellation-image {
             width: 100%;
             height: 100%;
@@ -109,7 +116,7 @@
             border: 1px solid rgba(34, 211, 238, 0.2);
             box-shadow: 0 8px 24px rgba(34, 211, 238, 0.15);
         }
-        
+
         #info-section {
             flex: 1;
             padding: 40px;
@@ -118,26 +125,26 @@
             justify-content: center;
             overflow-y: auto;
         }
-        
-        #detail-panel h2 { 
+
+        #detail-panel h2 {
             margin: 0 0 8px 0;
             font-size: 22px;
             font-weight: bold;
             color: #67e8f9;
             text-shadow: 0 0 10px rgba(103, 232, 249, 0.3);
         }
-        
-        #detail-panel #comment { 
-            font-size: 14px; 
-            line-height: 1.6; 
+
+        #detail-panel #comment {
+            font-size: 14px;
+            line-height: 1.6;
             margin: 0 0 12px 0;
             color: #cbd5e1;
         }
-        
+
         #charms-section {
             margin-top: 8px;
         }
-        
+
         #charms-label {
             font-size: 16px;
             font-weight: bold;
@@ -145,99 +152,99 @@
             color: #67e8f9;
             text-shadow: 0 0 10px rgba(103, 232, 249, 0.3);
         }
-        
-        #detail-panel #charms { 
+
+        #detail-panel #charms {
             margin: 0;
-            font-style: normal; 
+            font-style: normal;
             color: #cbd5e1;
             font-size: 14px;
             line-height: 1.4;
         }
-        
+
         /* 모바일 상세 패널 내부 요소 최적화 */
         @media screen and (max-width: 480px) {
             #detail-content {
                 flex-direction: column;
             }
-            
+
             #image-section {
                 flex: none;
                 padding: 20px;
                 height: 45%;
             }
-            
+
             #detail-panel #constellation-image {
                 width: 100%;
                 height: 100%;
                 max-width: 250px;
                 max-height: 180px;
             }
-            
+
             #info-section {
                 flex: none;
                 padding: 20px;
                 height: 55%;
                 overflow-y: auto;
             }
-            
+
             #detail-panel h2 {
                 font-size: 18px;
                 margin-bottom: 6px;
             }
-            
+
             #detail-panel #comment {
                 font-size: 12px;
                 margin-bottom: 8px;
             }
-            
+
             #charms-label {
                 font-size: 14px;
                 margin-bottom: 6px;
             }
-            
+
             #detail-panel #charms {
                 font-size: 12px;
                 line-height: 1.3;
             }
         }
-        
+
         @media screen and (max-width: 360px) {
             #image-section {
                 padding: 15px;
                 height: 40%;
             }
-            
+
             #detail-panel #constellation-image {
                 max-width: 200px;
                 max-height: 140px;
             }
-            
+
             #info-section {
                 padding: 15px;
                 height: 60%;
             }
-            
+
             #detail-panel h2 {
                 font-size: 16px;
                 margin-bottom: 5px;
             }
-            
+
             #detail-panel #comment {
                 font-size: 11px;
                 margin-bottom: 6px;
             }
-            
+
             #charms-label {
                 font-size: 13px;
                 margin-bottom: 5px;
             }
-            
+
             #detail-panel #charms {
                 font-size: 11px;
                 line-height: 1.2;
             }
         }
-        
+
         #close-btn {
             position: absolute;
             top: 15px;
@@ -248,80 +255,99 @@
             transition: all 0.3s ease;
             text-shadow: 0 0 10px rgba(103, 232, 249, 0.5);
         }
-        
+
         #close-btn:hover {
             color: #22d3ee;
             text-shadow: 0 0 20px rgba(34, 211, 238, 0.8);
             transform: scale(1.1);
         }
-        
+
         /* 모바일 닫기 버튼 최적화 */
         @media screen and (max-width: 480px) {
             #close-btn {
                 top: 12px;
                 right: 15px;
                 font-size: 20px;
-                padding: 5px; /* 터치 영역 확장 */
+                padding: 5px;
+                /* 터치 영역 확장 */
             }
         }
-        
+
         @media screen and (max-width: 360px) {
             #close-btn {
                 top: 10px;
                 right: 12px;
                 font-size: 18px;
-                padding: 6px; /* 터치 영역 더 확장 */
+                padding: 6px;
+                /* 터치 영역 더 확장 */
             }
         }
-        
-        /* 테스트 별 삭제 버튼 */
-        #clear-test-btn {
-            position: absolute;
-            bottom: 20px;
+
+        /* 줌 인디케이터 */
+        #zoom-indicator {
+            position: fixed;
             right: 20px;
-            background: linear-gradient(to right, #22d3ee, #14b8a6);
-            color: #1e1b4b;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-            box-shadow: 0 8px 24px rgba(34, 211, 238, 0.3), 0 0 15px rgba(34, 211, 238, 0.2);
-            transition: all 0.3s ease;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(to bottom right, rgba(30, 41, 59, 0.7), rgba(30, 58, 138, 0.7));
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: 15px 10px;
+            border-radius: 16px;
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            box-shadow: 0 8px 24px rgba(34, 211, 238, 0.2);
+            z-index: 400;
         }
-        
-        /* 모바일 테스트 별 삭제 버튼 최적화 */
+
+        #zoom-label {
+            font-size: 10px;
+            color: #67e8f9;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        #zoom-bar-container {
+            width: 6px;
+            height: 120px;
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 3px;
+            position: relative;
+            border: 1px solid rgba(34, 211, 238, 0.2);
+        }
+
+        #zoom-bar-fill {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(to top, #22d3ee, #67e8f9);
+            border-radius: 3px;
+            transition: height 0.2s ease;
+        }
+
+        #zoom-value {
+            font-size: 11px;
+            color: #cbd5e1;
+            font-weight: 600;
+        }
+
+        /* 모바일 줌 인디케이터 최적화 */
         @media screen and (max-width: 480px) {
-            #clear-test-btn {
-                bottom: 15px;
-                right: 15px;
-                padding: 8px 12px;
-                font-size: 12px;
-                border-radius: 6px;
+            #zoom-indicator {
+                right: 10px;
+                padding: 10px 8px;
+            }
+
+            #zoom-bar-container {
+                height: 100px;
             }
         }
-        
-        @media screen and (max-width: 360px) {
-            #clear-test-btn {
-                bottom: 12px;
-                right: 12px;
-                padding: 6px 10px;
-                font-size: 11px;
-                border-radius: 5px;
-            }
-        }
-        
-        #clear-test-btn:hover {
-            background: linear-gradient(to right, #06b6d4, #0d9488);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 32px rgba(34, 211, 238, 0.4), 0 0 25px rgba(34, 211, 238, 0.3);
-        }
-        
-        #clear-test-btn:active {
-            transform: translateY(0);
-        }
-        
+
         /* 인트로 화면 스타일 */
         #intro-overlay {
             position: fixed;
@@ -335,108 +361,118 @@
             justify-content: center;
             z-index: 1000;
             transition: opacity 1s ease-out;
-            pointer-events: none; /* 배경 3D 인터랙션 방지 */
+            pointer-events: none;
+            /* 배경 3D 인터랙션 방지 */
         }
-        
+
         #intro-overlay.fade-out {
             opacity: 0;
         }
-        
+
         #intro-logo {
             width: 300px;
             height: auto;
             margin-bottom: 20px;
             animation: fadeInUp 1.5s ease-out;
-            max-width: 80vw; /* 화면 너비의 80% 제한 */
+            max-width: 80vw;
+            /* 화면 너비의 80% 제한 */
         }
-        
+
         #intro-title {
             width: 450px;
             height: auto;
             margin-bottom: 30px;
             animation: fadeInUp 1.8s ease-out;
-            max-width: 85vw; /* 화면 너비의 85% 제한 */
+            max-width: 85vw;
+            /* 화면 너비의 85% 제한 */
         }
-        
+
         #intro-button {
             width: 260px;
             height: auto;
             cursor: pointer;
             transition: transform 0.3s ease;
             animation: fadeInUp 2.1s ease-out;
-            pointer-events: auto; /* 버튼만 클릭 가능 */
-            max-width: 70vw; /* 화면 너비의 70% 제한 */
-            min-height: 44px; /* 터치 영역 최소 크기 보장 */
+            pointer-events: auto;
+            /* 버튼만 클릭 가능 */
+            max-width: 70vw;
+            /* 화면 너비의 70% 제한 */
+            min-height: 44px;
+            /* 터치 영역 최소 크기 보장 */
         }
-        
+
         /* 모바일 세로 모드 최적화 */
         @media screen and (max-width: 480px) {
             #intro-logo {
                 width: 240px;
                 margin-bottom: 15px;
             }
-            
+
             #intro-title {
                 width: 360px;
                 margin-bottom: 20px;
             }
-            
+
             #intro-button {
                 width: 210px;
-                min-height: 48px; /* 모바일 터치 권장 크기 */
+                min-height: 48px;
+                /* 모바일 터치 권장 크기 */
             }
         }
-        
+
         /* 아주 작은 화면 대응 */
         @media screen and (max-width: 360px) {
             #intro-logo {
                 width: 200px;
                 margin-bottom: 12px;
             }
-            
+
             #intro-title {
                 width: 280px;
                 margin-bottom: 15px;
             }
-            
+
             #intro-button {
                 width: 190px;
                 min-height: 50px;
             }
         }
-        
+
         #intro-button.spinning {
             animation: spinButton 0.8s ease-out;
         }
-        
+
         #intro-button:hover {
             transform: scale(1.05);
         }
-        
+
         #intro-button:active {
             transform: scale(0.98);
         }
-        
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-        
+
         @keyframes spinButton {
             from {
                 transform: rotate(0deg);
             }
+
             to {
-                transform: rotate(720deg); /* 2바퀴 회전 */
+                transform: rotate(720deg);
+                /* 2바퀴 회전 */
             }
         }
-        
+
         /* 도움말 패널 스타일 */
         #help-panel {
             position: fixed;
@@ -456,7 +492,7 @@
             display: none;
             min-width: 200px;
         }
-        
+
         /* 도움말 패널 닫기 버튼 */
         #help-close-btn {
             position: absolute;
@@ -470,12 +506,12 @@
             display: none;
             text-shadow: 0 0 10px rgba(103, 232, 249, 0.5);
         }
-        
+
         #help-close-btn:hover {
             color: #22d3ee;
             text-shadow: 0 0 20px rgba(34, 211, 238, 0.8);
         }
-        
+
         /* i 아이콘 버튼 (도움말 열기용) */
         #help-toggle-btn {
             position: fixed;
@@ -498,13 +534,13 @@
             transition: all 0.3s ease;
             text-shadow: 0 0 10px rgba(103, 232, 249, 0.5);
         }
-        
+
         #help-toggle-btn:hover {
             background: linear-gradient(to bottom right, rgba(30, 58, 138, 1), rgba(49, 46, 129, 1));
             transform: scale(1.1);
             box-shadow: 0 12px 32px rgba(34, 211, 238, 0.3), 0 0 25px rgba(34, 211, 238, 0.2);
         }
-        
+
         /* 모바일 도움말 패널 최적화 */
         @media screen and (max-width: 480px) {
             #help-panel {
@@ -515,14 +551,15 @@
                 min-width: 160px;
                 border-radius: 8px;
             }
-            
+
             #help-close-btn {
-                display: block; /* 모바일에서만 표시 */
+                display: block;
+                /* 모바일에서만 표시 */
                 top: 5px;
                 right: 8px;
                 font-size: 16px;
             }
-            
+
             #help-toggle-btn {
                 top: 10px;
                 right: 10px;
@@ -531,7 +568,7 @@
                 font-size: 16px;
             }
         }
-        
+
         @media screen and (max-width: 360px) {
             #help-panel {
                 top: 8px;
@@ -540,13 +577,13 @@
                 font-size: 11px;
                 min-width: 140px;
             }
-            
+
             #help-close-btn {
                 top: 4px;
                 right: 6px;
                 font-size: 14px;
             }
-            
+
             #help-toggle-btn {
                 top: 8px;
                 right: 8px;
@@ -555,7 +592,7 @@
                 font-size: 15px;
             }
         }
-        
+
         #help-panel h3 {
             margin: 0 0 10px 0;
             font-size: 16px;
@@ -564,14 +601,14 @@
             padding-bottom: 5px;
             text-shadow: 0 0 10px rgba(103, 232, 249, 0.3);
         }
-        
+
         #help-panel .help-item {
             margin-bottom: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        
+
         #help-panel .help-key {
             background: linear-gradient(to right, rgba(34, 211, 238, 0.2), rgba(20, 184, 166, 0.2));
             padding: 2px 6px;
@@ -582,55 +619,55 @@
             border: 1px solid rgba(34, 211, 238, 0.3);
             color: #67e8f9;
         }
-        
+
         #help-panel .help-desc {
             color: #cbd5e1;
             font-size: 12px;
         }
-        
+
         /* 모바일 도움말 패널 내부 요소 최적화 */
         @media screen and (max-width: 480px) {
             #help-panel h3 {
                 font-size: 14px;
                 margin-bottom: 8px;
             }
-            
+
             #help-panel .help-item {
                 margin-bottom: 6px;
             }
-            
+
             #help-panel .help-key {
                 font-size: 10px;
                 min-width: 70px;
                 padding: 2px 4px;
             }
-            
+
             #help-panel .help-desc {
                 font-size: 10px;
             }
         }
-        
+
         @media screen and (max-width: 360px) {
             #help-panel h3 {
                 font-size: 13px;
                 margin-bottom: 6px;
             }
-            
+
             #help-panel .help-item {
                 margin-bottom: 5px;
             }
-            
+
             #help-panel .help-key {
                 font-size: 9px;
                 min-width: 60px;
                 padding: 1px 3px;
             }
-            
+
             #help-panel .help-desc {
                 font-size: 9px;
             }
         }
-        
+
         /* 온보딩 오버레이 스타일 */
         #onboarding-overlay {
             position: fixed;
@@ -646,7 +683,7 @@
             z-index: 2000;
             pointer-events: none;
         }
-        
+
         #onboarding-content {
             background: linear-gradient(to bottom right, rgba(30, 41, 59, 0.95), rgba(30, 58, 138, 0.95));
             backdrop-filter: blur(12px);
@@ -662,7 +699,7 @@
             animation: bounceIn 0.6s ease-out;
             position: relative;
         }
-        
+
         /* X 닫기 버튼 */
         #onboarding-close {
             position: absolute;
@@ -682,34 +719,34 @@
             justify-content: center;
             border-radius: 50%;
         }
-        
+
         #onboarding-close:hover {
             color: #22d3ee;
             background: rgba(34, 211, 238, 0.1);
             transform: rotate(90deg);
         }
-        
+
         #onboarding-icon {
             font-size: 48px;
             margin-bottom: 15px;
             animation: pulse 2s infinite;
             filter: drop-shadow(0 0 15px rgba(103, 232, 249, 0.5));
         }
-        
+
         #onboarding-message {
             font-size: 18px;
             margin-bottom: 20px;
             line-height: 1.5;
             color: #cbd5e1;
         }
-        
+
         #onboarding-progress {
             font-size: 14px;
             color: #67e8f9;
             margin-bottom: 15px;
             text-shadow: 0 0 10px rgba(103, 232, 249, 0.3);
         }
-        
+
         /* 다음/완료 버튼 */
         #onboarding-next {
             background: linear-gradient(to right, #22d3ee, #14b8a6);
@@ -724,13 +761,13 @@
             pointer-events: auto;
             box-shadow: 0 4px 15px rgba(34, 211, 238, 0.3);
         }
-        
+
         #onboarding-next:hover {
             background: linear-gradient(to right, #06b6d4, #0d9488);
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(34, 211, 238, 0.4);
         }
-        
+
         /* 모바일 온보딩 최적화 */
         @media screen and (max-width: 480px) {
             #onboarding-content {
@@ -739,45 +776,62 @@
                 max-width: 90vw;
                 border-radius: 10px;
             }
-            
+
             #onboarding-close {
                 top: 10px;
                 right: 15px;
                 font-size: 20px;
             }
-            
+
             #onboarding-icon {
                 font-size: 36px;
                 margin-bottom: 10px;
             }
-            
+
             #onboarding-message {
                 font-size: 16px;
                 margin-bottom: 15px;
             }
-            
+
             #onboarding-progress {
                 font-size: 12px;
                 margin-bottom: 10px;
             }
-            
+
             #onboarding-next {
                 font-size: 14px;
                 padding: 10px 25px;
             }
         }
-        
+
         @keyframes bounceIn {
-            0% { transform: scale(0.8); opacity: 0; }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); opacity: 1; }
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
-        
+
         @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
         }
-        
+
         /* 드래그 힌트 애니메이션 */
         .drag-hint {
             position: absolute;
@@ -787,7 +841,7 @@
             pointer-events: none;
             z-index: 1500;
         }
-        
+
         .drag-cursor {
             width: 30px;
             height: 30px;
@@ -797,29 +851,45 @@
             animation: dragDemo 3s infinite;
             box-shadow: 0 0 20px rgba(34, 211, 238, 0.6), 0 0 40px rgba(34, 211, 238, 0.3);
         }
-        
+
         @keyframes dragDemo {
-            0% { transform: translate(0, 0); }
-            25% { transform: translate(50px, -30px); }
-            50% { transform: translate(-50px, 30px); }
-            75% { transform: translate(30px, -50px); }
-            100% { transform: translate(0, 0); }
+            0% {
+                transform: translate(0, 0);
+            }
+
+            25% {
+                transform: translate(50px, -30px);
+            }
+
+            50% {
+                transform: translate(-50px, 30px);
+            }
+
+            75% {
+                transform: translate(30px, -50px);
+            }
+
+            100% {
+                transform: translate(0, 0);
+            }
         }
     </style>
 </head>
+
 <body>
     <!-- 인트로 화면 오버레이 -->
     <div id="intro-overlay">
         <img id="intro-logo" src="logo.png" alt="로고">
         <img id="intro-title" src="title.png" alt="제목">
-        <img id="intro-button" src="button.png" alt="탐험 떠나기" onclick="startExploration()" ontouchend="startExploration()">
+        <img id="intro-button" src="button.png" alt="탐험 떠나기" onclick="startExploration()"
+            ontouchend="startExploration()">
     </div>
 
     <div id="tooltip">
         <h3 id="tooltip-name"></h3>
         <p id="tooltip-desc"></p>
     </div>
-    
+
     <!-- 도움말 패널 -->
     <div id="help-panel">
         <div id="help-close-btn">×</div>
@@ -849,20 +919,27 @@
     <!-- i 아이콘 버튼 (도움말 열기용) -->
     <button id="help-toggle-btn">ⓘ</button>
 
-    <!-- 별자리 삭제 버튼 -->
-    <button id="clear-test-btn" onclick="clearAllConstellations()">🗑️ 별자리 지우기</button>
-    
+    <!-- 줌 인디케이터 -->
+    <div id="zoom-indicator">
+        <div id="zoom-label">ZOOM</div>
+        <div id="zoom-bar-container">
+            <div id="zoom-bar-fill"></div>
+        </div>
+        <div id="zoom-value">100%</div>
+    </div>
+
     <!-- 온보딩 오버레이 -->
     <div id="onboarding-overlay">
         <div id="onboarding-content">
-            <button id="onboarding-close" onclick="event.stopPropagation(); window.skipOnboarding(); return false;">×</button>
+            <button id="onboarding-close"
+                onclick="event.stopPropagation(); window.skipOnboarding(); return false;">×</button>
             <div id="onboarding-icon">🖱️</div>
             <div id="onboarding-message">마우스로 드래그해서 우주를 돌려보세요!</div>
             <div id="onboarding-progress">1 / 6</div>
             <button id="onboarding-next">다음</button>
         </div>
     </div>
-    
+
     <!-- 드래그 힌트 애니메이션 -->
     <div class="drag-hint" id="drag-hint" style="display: none;">
         <div class="drag-cursor"></div>
@@ -912,7 +989,7 @@
             }
         }
     </script>
-    
+
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
@@ -928,13 +1005,14 @@
             appId: "1:845988355289:web:b5243b16e80bfb9cbf32c8",
             measurementId: "G-QG1QWM3LSC"
         };
-        
+
         // Firebase 초기화
         firebase.initializeApp(firebaseConfig);
         window.firebaseDatabase = firebase.database();
         console.log('🔥 3D 프로젝트 Firebase 초기화 완료');
     </script>
-    
+
     <script type="module" src="main.js"></script>
 </body>
+
 </html>

@@ -988,6 +988,9 @@ function animate() {
     }
     
     controls.update();
+    
+    // 줌 인디케이터 업데이트
+    updateZoomIndicator();
 
     // 영구 후광 업데이트
     updatePermanentHalo();
@@ -1540,6 +1543,27 @@ function updatePermanentHalo() {
         direction.subVectors(currentNewestStar.position, camera.position).normalize();
         currentHalo.position.add(direction.multiplyScalar(0.02)); // 아주 조금만 뒤에
     }
+}
+
+// 줌 인디케이터 업데이트
+function updateZoomIndicator() {
+    const zoomBarFill = document.getElementById('zoom-bar-fill');
+    const zoomValue = document.getElementById('zoom-value');
+    
+    if (!zoomBarFill || !zoomValue) return;
+    
+    // 카메라 거리 기반으로 줌 레벨 계산 (2.0이 기본값, 1.0이 최대 줌인, 5.0이 최대 줌아웃)
+    const currentDistance = camera.position.length();
+    const minDistance = 1.0; // 최대 줌인
+    const maxDistance = 5.0; // 최대 줌아웃
+    const defaultDistance = 2.0; // 기본값
+    
+    // 100%를 기준으로 계산 (거리가 가까울수록 확대)
+    const zoomPercent = Math.round(((maxDistance - currentDistance) / (maxDistance - minDistance)) * 100);
+    const clampedPercent = Math.max(0, Math.min(100, zoomPercent));
+    
+    zoomBarFill.style.height = clampedPercent + '%';
+    zoomValue.textContent = clampedPercent + '%';
 }
 
 // 온보딩 시작 함수
