@@ -1330,6 +1330,13 @@ function setNewestStar(star) {
 function focusOnNewestStar() {
     if (!currentNewestStar) return;
     
+    // 인트로 화면이 보이는 경우 카메라 이동하지 않음
+    const introOverlay = document.getElementById('intro-overlay');
+    if (introOverlay && introOverlay.style.display !== 'none') {
+        console.log('⏸️ 시작화면 표시 중 - 카메라 이동 건너뜀');
+        return;
+    }
+    
     // 회전 일시 정지 및 타이머 리셋 (3분간 정지)
     autoRotate = false;
     lastInteractionTime = Date.now();
