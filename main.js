@@ -1633,6 +1633,12 @@ function completeOnboarding() {
     // 도움말 패널 표시
     showHelpPanel();
     
+    // 튜토리얼 전에 추가된 별이 있다면 그 별로 이동
+    if (currentNewestStar) {
+        focusOnNewestStar();
+        console.log('📍 튜토리얼 완료 후 최신 별로 이동');
+    }
+    
     console.log('🎉 온보딩 완료!');
 }
 
